@@ -67,7 +67,7 @@ public class HomeActivity extends AppCompatActivity
                 config.setAllowedDirection(Config.AllowedDirection.VERTICAL_AND_HORIZONTAL);
 
                 folioReader.setConfig(config, true)
-                        .openBook(R.raw.varun);
+                        .openBook(R.raw.accessible_epub_3);
             }
         });
 
@@ -85,6 +85,14 @@ public class HomeActivity extends AppCompatActivity
                 folioReader.setReadLocator(readLocator);
                 folioReader.setConfig(config, true)
                         .openBook("file:///android_asset/TheSilverChair.epub");
+            }
+        });
+
+        findViewById(R.id.file_explorer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(getApplicationContext(),"Beeg Yoshi",Toast.LENGTH_SHORT).show();
             }
         });
     }

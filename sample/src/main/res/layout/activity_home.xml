@@ -4,22 +4,34 @@
     android:layout_centerInParent="true">
 
     <Button
-        android:id="@+id/btn_raw"
+        android:id="@+id/btn_assest"
+        android:background="@android:color/holo_blue_bright"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
-        android:text="Open epub from raw" />
+        android:text="Open epub" />
 
     <Button
-        android:id="@+id/btn_assest"
+        android:id="@+id/btn_raw"
+        android:background="@android:color/holo_purple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_raw"
+        android:layout_below="@+id/btn_assest"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
-        android:text="Open epub assests" />
+        android:text="Open another epub" />
+    <Button
+            android:id="@+id/file_explorer"
+            android:background="@android:color/holo_green_light"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_raw"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:text="File Explorer" />
 
 </RelativeLayout>
