@@ -15,12 +15,18 @@
  */
 package com.folioreader.android.sample;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.folioreader.Config;
@@ -31,6 +37,7 @@ import com.folioreader.ui.base.OnSaveHighlight;
 import com.folioreader.util.AppUtil;
 import com.folioreader.util.OnHighlightListener;
 import com.folioreader.util.ReadLocatorListener;
+import lib.folderpicker.FolderPicker;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,6 +52,15 @@ public class HomeActivity extends AppCompatActivity
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
     private FolioReader folioReader;
 
+    private static final int SDCARD_PERMISSION = 1,
+            FOLDERPICKER_CODE = 2,
+            RESULT_CODE = 1,
+            FILE_PICKER_CODE = 3;
+
+
+
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +72,8 @@ public class HomeActivity extends AppCompatActivity
                 .setOnClosedListener(this);
 
         getHighlightsAndSave();
+
+        //checkStoragePermission();
 
         findViewById(R.id.btn_raw).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,10 +110,52 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(getApplicationContext(),"Beeg Yoshi",Toast.LENGTH_SHORT).show();
+                pickFolder();
+
+                //Toast.makeText(getApplicationContext(),"Beeg Yoshi",Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
+
+
+    void pickFolder() {
+        Intent intent = new Intent(this, FolderPicker.class);
+        startActivityForResult(intent, FOLDERPICKER_CODE);
+        onActivityResult(FOLDERPICKER_CODE, RESULT_CODE, intent);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == FOLDERPICKER_CODE && resultCode == Activity.RESULT_OK) {
+
+            String folderLocation = intent.getExtras().getString("data");
+            Log.i( "folderLocation", folderLocation );
+            Toast.makeText(getApplicationContext(),folderLocation,Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    /*
+    void checkStoragePermission() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            //Write permission is required so that folder picker can create new folder.
+            //If you just want to pick files, Read permission is enough.
+
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        SDCARD_PERMISSION);
+            }
+        }
+
+    }
+    */
 
     private ReadLocator getLastReadLocator() {
 

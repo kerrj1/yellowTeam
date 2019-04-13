@@ -51,14 +51,17 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
+    implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraintLayout"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation project(':folioreader')
+    implementation project(':folderpicker')
     //implementation "com.folioreader:folioreader:$versions.folioreaderSdk"
     implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
     implementation "com.fasterxml.jackson.core:jackson-annotations:$versions.jackson"
     implementation "com.fasterxml.jackson.core:jackson-databind:$versions.jackson"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$versions.jackson"
+    //implementation 'lib.kashif:folderpicker:2.4'
 }
