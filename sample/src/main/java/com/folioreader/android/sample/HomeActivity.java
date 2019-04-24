@@ -15,18 +15,11 @@
  */
 package com.folioreader.android.sample;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
-import androidx.annotation.Nullable;
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.folioreader.Config;
@@ -37,7 +30,6 @@ import com.folioreader.ui.base.OnSaveHighlight;
 import com.folioreader.util.AppUtil;
 import com.folioreader.util.OnHighlightListener;
 import com.folioreader.util.ReadLocatorListener;
-import lib.folderpicker.FolderPicker;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,23 +38,17 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class HomeActivity extends AppCompatActivity
         implements OnHighlightListener, ReadLocatorListener, FolioReader.OnClosedListener {
 
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
     private FolioReader folioReader;
 
-    private static final int SDCARD_PERMISSION = 1,
-            FOLDERPICKER_CODE = 2,
-            RESULT_CODE = 1,
-            FILE_PICKER_CODE = 3;
-
-
-
-
-
+    /** Called when the activity is first created. */
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -73,7 +59,46 @@ public class HomeActivity extends AppCompatActivity
 
         getHighlightsAndSave();
 
-        //checkStoragePermission();
+        RelativeLayout layout = findViewById(R.id.activity_home);
+        int btnCount = 0;
+
+        int xIdent;
+
+        int yIdent = 600;
+        for (int i = 0; i < 15; i++) {
+            final String btnName;
+            btnName = "Button " + btnCount;
+            xIdent = btnCount % 3;
+            Button btnTag = new Button(this);
+            btnTag.setText(btnName);
+            btnTag.setId(btnCount);
+            btnTag.setTag(btnName);
+            switch(xIdent){
+                case 0:
+                    btnTag.setX(0);
+                    break;
+                case 1:
+                    btnTag.setX(255);
+                    break;
+                case 2:
+                    btnTag.setX(510);
+            }
+            btnTag.setY(yIdent);
+            btnTag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //pickFolder();
+
+                    Toast.makeText(getApplicationContext(), btnName, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            layout.addView(btnTag);
+
+            btnCount++;
+            if(xIdent == 2) yIdent += 150;
+        }
 
         findViewById(R.id.btn_raw).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,52 +135,16 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
-                pickFolder();
+                //pickFolder();
 
-                //Toast.makeText(getApplicationContext(),"Beeg Yoshi",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Beeg Yoshi",Toast.LENGTH_SHORT).show();
             }
         });
-    }
 
 
 
-
-    void pickFolder() {
-        Intent intent = new Intent(this, FolderPicker.class);
-        startActivityForResult(intent, FOLDERPICKER_CODE);
-        onActivityResult(FOLDERPICKER_CODE, RESULT_CODE, intent);
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == FOLDERPICKER_CODE && resultCode == Activity.RESULT_OK) {
-
-            String folderLocation = intent.getExtras().getString("data");
-            Log.i( "folderLocation", folderLocation );
-            Toast.makeText(getApplicationContext(),folderLocation,Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
-    /*
-    void checkStoragePermission() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            //Write permission is required so that folder picker can create new folder.
-            //If you just want to pick files, Read permission is enough.
-
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        SDCARD_PERMISSION);
-            }
-        }
 
     }
-    */
 
     private ReadLocator getLastReadLocator() {
 
