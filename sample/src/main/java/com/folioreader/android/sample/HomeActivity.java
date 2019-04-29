@@ -23,10 +23,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lib.folderpicker.FolderPicker;
 import com.folioreader.Config;
 import com.folioreader.FolioReader;
 import com.folioreader.model.HighLight;
@@ -35,23 +35,19 @@ import com.folioreader.ui.base.OnSaveHighlight;
 import com.folioreader.util.AppUtil;
 import com.folioreader.util.OnHighlightListener;
 import com.folioreader.util.ReadLocatorListener;
+import lib.folderpicker.FolderPicker;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
-
 
 public class HomeActivity extends AppCompatActivity
         implements OnHighlightListener, ReadLocatorListener, FolioReader.OnClosedListener {
 
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
     private FolioReader folioReader;
-
-
+    public static String usrFolder = "/storage/emulated/0/Download/";
     private static final int SDCARD_PERMISSION = 1,
             FOLDERPICKER_CODE = 2,
             RESULT_CODE = 1,
@@ -65,7 +61,7 @@ public class HomeActivity extends AppCompatActivity
     /** Called when the activity is first created. */
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -76,50 +72,25 @@ public class HomeActivity extends AppCompatActivity
 
         getHighlightsAndSave();
 
-
         //checkStoragePermission();
 
-        RelativeLayout layout = findViewById(R.id.activity_home);
-        int btnCount = 0;
+        debugButtons();
 
-        int xIdent;
+        findViewById(R.id.file_explorer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int totalButtons;
+                totalButtons = pickFolder();
 
-        int yIdent = 600;
-        for (int i = 0; i < 15; i++) {
-            final String btnName;
-            btnName = "Button " + btnCount;
-            xIdent = btnCount % 3;
-            Button btnTag = new Button(this);
-            btnTag.setText(btnName);
-            btnTag.setId(btnCount);
-            btnTag.setTag(btnName);
-            switch(xIdent){
-                case 0:
-                    btnTag.setX(0);
-                    break;
-                case 1:
-                    btnTag.setX(255);
-                    break;
-                case 2:
-                    btnTag.setX(510);
+                File rootFolder = new File(usrFolder);
+                genButtons(totalButtons, rootFolder);
+
+                //Toast.makeText(getApplicationContext(),"Beeg Yoshi",Toast.LENGTH_SHORT).show();
             }
-            btnTag.setY(yIdent);
-            btnTag.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        });
+    }
 
-                    //pickFolder();
-
-                    Toast.makeText(getApplicationContext(), btnName, Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            layout.addView(btnTag);
-
-            btnCount++;
-            if(xIdent == 2) yIdent += 150;
-        }
-
+    void debugButtons(){
 
         findViewById(R.id.btn_raw).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,43 +119,112 @@ public class HomeActivity extends AppCompatActivity
 
                 folioReader.setReadLocator(readLocator);
                 folioReader.setConfig(config, true)
-                        .openBook("file:///android_asset/TheSilverChair.epub");
-            }
-        });
-
-        findViewById(R.id.file_explorer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                pickFolder();
-
-                //Toast.makeText(getApplicationContext(),"Beeg Yoshi",Toast.LENGTH_SHORT).show();
-
-                //pickFolder();
-
-                Toast.makeText(getApplicationContext(),"Beeg Yoshi",Toast.LENGTH_SHORT).show();
-
+                        .openBook("file:///android_asset/TheSilverChair.epub\"");
+                //file:/storage/emulated/0/Download/TheSilverChair.epub
+                //"file:///android_asset/TheSilverChair.epub"
+                //adventures.epub
             }
         });
 
     }
 
+    void genButtons(int bookCount, File folder){
+        RelativeLayout layout = findViewById(R.id.activity_home);
 
+        FileFilter fileFilter = new WildcardFileFilter("*.epub");
+        final File[] listOfFiles = folder.listFiles(fileFilter);
 
+        int btnCount = 0;
 
-    void pickFolder() {
+        int xIdent;
+
+        int yIdent = 900;
+        int i;
+        for (i = 0; i <bookCount; i++) {
+            final String btnName;
+            final String bookPath = ""+listOfFiles[i];
+            btnName = "Button " + btnCount;
+            xIdent = btnCount % 3;
+            Button btnTag = new Button(this);
+            btnTag.setText(btnName);
+            btnTag.setId(btnCount);
+            btnTag.setTag(btnName);
+            switch(xIdent){
+                case 0:
+                    btnTag.setX(0);
+                    break;
+                case 1:
+                    btnTag.setX(325);
+                    break;
+                case 2:
+                    btnTag.setX(670);
+            }
+            btnTag.setY(yIdent);
+            btnTag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    ReadLocator readLocator = getLastReadLocator();
+
+                    Config config = AppUtil.getSavedConfig(getApplicationContext());
+                    if (config == null)
+                        config = new Config();
+                    config.setAllowedDirection(Config.AllowedDirection.VERTICAL_AND_HORIZONTAL);
+
+                    folioReader.setReadLocator(readLocator);
+                    //System.out.println(listOfFiles[3]);
+                    folioReader.setConfig(config, true).openBook(bookPath);
+
+                    //Toast.makeText(getApplicationContext(), btnName, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            layout.addView(btnTag);
+
+            btnCount++;
+            if(xIdent == 2) yIdent += 150;
+        }
+
+    }
+
+    int pickFolder() {
+        int bookCount;
+
         Intent intent = new Intent(this, FolderPicker.class);
         startActivityForResult(intent, FOLDERPICKER_CODE);
         onActivityResult(FOLDERPICKER_CODE, RESULT_CODE, intent);
+        Log.d("folderLocation", usrFolder);
+        File rootFolder = new File(usrFolder);
+        bookCount = folderScan(rootFolder);
+        return bookCount;
     }
+
+    public int folderScan(File folder) {
+
+        FileFilter fileFilter = new WildcardFileFilter("*.epub");
+        File[] listOfFiles = folder.listFiles(fileFilter);
+
+        System.out.println(listOfFiles.length);
+        int totalFiles = 0;
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                totalFiles++;
+                System.out.println("File " + listOfFiles[i].getName());
+            }
+        }
+        return totalFiles;
+    }
+
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == FOLDERPICKER_CODE && resultCode == Activity.RESULT_OK) {
 
             String folderLocation = intent.getExtras().getString("data");
-            Log.i( "folderLocation", folderLocation );
-            Toast.makeText(getApplicationContext(),folderLocation,Toast.LENGTH_SHORT).show();
+            //Log.i( "folderLocation", folderLocation );
+            usrFolder = folderLocation;
+            Toast.makeText(getApplicationContext(),usrFolder,Toast.LENGTH_SHORT).show();
 
         }
     }
