@@ -48,13 +48,16 @@ public class HomeActivity extends AppCompatActivity
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
     private FolioReader folioReader;
     public int pastButtons = 0;
+    public int allButtons = 0;
     public static String usrFolder = "/storage/emulated/0/Download/";
+    public int clicks = 0;
     private static final int SDCARD_PERMISSION = 1,
             FOLDERPICKER_CODE = 2,
             RESULT_CODE = 1,
             FILE_PICKER_CODE = 3;
 
     /** Called when the activity is first created. */
+    private Button fileButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,15 +73,25 @@ public class HomeActivity extends AppCompatActivity
 
         debugButtons();
 
+        fileButton = findViewById(R.id.file_explorer);
+        //fileButton.setText(usrFolder);
+
         findViewById(R.id.file_explorer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int totalButtons;
-                totalButtons = pickFolder();
+                if(clicks % 2 == 0) {
+
+                    allButtons = pickFolder();
+                }
+                if(clicks >1){
+                    usrFolder = fileButton.getText().toString();
+                }
                 File rootFolder = new File(usrFolder);
-                genButtons(totalButtons, rootFolder);
+                genButtons(folderScan(rootFolder), rootFolder);
+                clicks++;
             }
         });
+
     }
 
     void debugButtons(){
@@ -179,7 +192,7 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-    int pickFolder() {
+    public int pickFolder() {
         int bookCount;
 
         Intent intent = new Intent(this, FolderPicker.class);
@@ -190,6 +203,8 @@ public class HomeActivity extends AppCompatActivity
         bookCount = folderScan(rootFolder);
         return bookCount;
     }
+
+
 
     public int folderScan(File folder) {
 
@@ -209,16 +224,15 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == FOLDERPICKER_CODE && resultCode == Activity.RESULT_OK) {
 
             String folderLocation = intent.getExtras().getString("data");
-            //Log.i( "folderLocation", folderLocation );
+            Log.i( "folderLocation", folderLocation );
             usrFolder = folderLocation;
             Toast.makeText(getApplicationContext(),usrFolder,Toast.LENGTH_SHORT).show();
-
-
+            fileButton.setText(usrFolder);
 
 
         }
