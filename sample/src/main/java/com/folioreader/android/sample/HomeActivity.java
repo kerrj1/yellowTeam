@@ -53,11 +53,6 @@ public class HomeActivity extends AppCompatActivity
             RESULT_CODE = 1,
             FILE_PICKER_CODE = 3;
 
-
-
-
-
-
     /** Called when the activity is first created. */
 
     @Override
@@ -72,8 +67,6 @@ public class HomeActivity extends AppCompatActivity
 
         getHighlightsAndSave();
 
-        //checkStoragePermission();
-
         debugButtons();
 
         findViewById(R.id.file_explorer).setOnClickListener(new View.OnClickListener() {
@@ -81,11 +74,8 @@ public class HomeActivity extends AppCompatActivity
             public void onClick(View v) {
                 int totalButtons;
                 totalButtons = pickFolder();
-
                 File rootFolder = new File(usrFolder);
                 genButtons(totalButtons, rootFolder);
-
-                //Toast.makeText(getApplicationContext(),"Beeg Yoshi",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -130,59 +120,51 @@ public class HomeActivity extends AppCompatActivity
 
     void genButtons(int bookCount, File folder){
         RelativeLayout layout = findViewById(R.id.activity_home);
-
         FileFilter fileFilter = new WildcardFileFilter("*.epub");
         final File[] listOfFiles = folder.listFiles(fileFilter);
-
         int btnCount = 0;
-
-        int xIdent;
-
+        //int xIdent;
         int yIdent = 900;
         int i;
         for (i = 0; i <bookCount; i++) {
             final String btnName;
+            String bookName = listOfFiles[i].getName();
+            bookName = bookName.replaceAll(".epub","");
             final String bookPath = ""+listOfFiles[i];
-            btnName = "Button " + btnCount;
-            xIdent = btnCount % 3;
+            btnName = bookName;
+            //xIdent = btnCount % 3;
             Button btnTag = new Button(this);
             btnTag.setText(btnName);
             btnTag.setId(btnCount);
             btnTag.setTag(btnName);
-            switch(xIdent){
-                case 0:
-                    btnTag.setX(0);
-                    break;
-                case 1:
-                    btnTag.setX(325);
-                    break;
-                case 2:
-                    btnTag.setX(670);
-            }
+//            switch(xIdent){
+//                case 0:
+//                    btnTag.setX(0);
+//                    break;
+//                case 1:
+//                    btnTag.setX(325);
+//                    break;
+//                case 2:
+//                    btnTag.setX(670);
+//            }
             btnTag.setY(yIdent);
             btnTag.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     ReadLocator readLocator = getLastReadLocator();
-
                     Config config = AppUtil.getSavedConfig(getApplicationContext());
                     if (config == null)
                         config = new Config();
                     config.setAllowedDirection(Config.AllowedDirection.VERTICAL_AND_HORIZONTAL);
-
                     folioReader.setReadLocator(readLocator);
-                    //System.out.println(listOfFiles[3]);
                     folioReader.setConfig(config, true).openBook(bookPath);
-
-                    //Toast.makeText(getApplicationContext(), btnName, Toast.LENGTH_SHORT).show();
                 }
             });
 
             layout.addView(btnTag);
-
             btnCount++;
-            if(xIdent == 2) yIdent += 150;
+            //if(xIdent == 2)
+                yIdent += 150;
         }
 
     }
