@@ -47,6 +47,7 @@ public class HomeActivity extends AppCompatActivity
 
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
     private FolioReader folioReader;
+    public int pastButtons = 0;
     public static String usrFolder = "/storage/emulated/0/Download/";
     private static final int SDCARD_PERMISSION = 1,
             FOLDERPICKER_CODE = 2,
@@ -120,6 +121,14 @@ public class HomeActivity extends AppCompatActivity
 
     void genButtons(int bookCount, File folder){
         RelativeLayout layout = findViewById(R.id.activity_home);
+
+        for(int i=0; i< pastButtons;i++)
+        {
+            Button btn;
+            btn = findViewById(i);
+            layout.removeView(btn);
+        }
+
         FileFilter fileFilter = new WildcardFileFilter("*.epub");
         final File[] listOfFiles = folder.listFiles(fileFilter);
         int btnCount = 0;
@@ -166,6 +175,7 @@ public class HomeActivity extends AppCompatActivity
             //if(xIdent == 2)
                 yIdent += 150;
         }
+        pastButtons = btnCount;
 
     }
 
@@ -208,8 +218,13 @@ public class HomeActivity extends AppCompatActivity
             usrFolder = folderLocation;
             Toast.makeText(getApplicationContext(),usrFolder,Toast.LENGTH_SHORT).show();
 
+
+
+
         }
     }
+
+
 
     /*
     void checkStoragePermission() {
