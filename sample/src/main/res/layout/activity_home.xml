@@ -1,8 +1,11 @@
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/activity_home"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerInParent="true">
+                android:layout_centerInParent="true" android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbars="vertical">
+
 
     <Button
             android:id="@+id/btn_assest"
@@ -12,7 +15,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
-            android:text="Open epub" />
+            android:text="Open epub"/>
 
     <Button
             android:id="@+id/btn_raw"
@@ -23,7 +26,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
-            android:text="Open another epub" />
+            android:text="Open another epub"/>
     <Button
             android:id="@+id/file_explorer"
             android:background="@android:color/holo_green_light"
@@ -33,15 +36,25 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp"
-            android:text="File Explorer" />
+            android:text="File Explorer"/>
     <Button
-            android:id="@+id/update"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_raw"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="10dp"
-            android:text="Update"/>
+                android:id="@+id/update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/file_explorer"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp"
+                android:text="Update"/>
+    <TextView
+                android:text="TextView"
+                android:id="@+id/file_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/file_explorer"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="76dp"
+                android:layout_marginRight="10dp"/>
+
 
 </RelativeLayout>

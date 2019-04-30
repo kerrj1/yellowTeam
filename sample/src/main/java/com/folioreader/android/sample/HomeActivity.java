@@ -20,9 +20,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -48,16 +46,14 @@ public class HomeActivity extends AppCompatActivity
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
     private FolioReader folioReader;
     public int pastButtons = 0;
-    public int allButtons = 0;
     public static String usrFolder = "/storage/emulated/0/Download/";
-    public int clicks = 0;
     private static final int SDCARD_PERMISSION = 1,
             FOLDERPICKER_CODE = 2,
             RESULT_CODE = 1,
             FILE_PICKER_CODE = 3;
 
     /** Called when the activity is first created. */
-    private Button fileButton;
+    private TextView fileLoc;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,25 +69,28 @@ public class HomeActivity extends AppCompatActivity
 
         debugButtons();
 
-        fileButton = findViewById(R.id.file_explorer);
-        //fileButton.setText(usrFolder);
+        fileLoc = findViewById(R.id.file_location);
+        fileLoc.setText(usrFolder);
 
         findViewById(R.id.file_explorer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(clicks % 2 == 0) {
 
-                    allButtons = pickFolder();
-                }
-                if(clicks >1){
-                    usrFolder = fileButton.getText().toString();
-                }
-                File rootFolder = new File(usrFolder);
-                genButtons(folderScan(rootFolder), rootFolder);
-                clicks++;
+                pickFolder();
+
+                usrFolder = fileLoc.getText().toString();
+
             }
         });
+        findViewById(R.id.update).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                usrFolder = fileLoc.getText().toString();
+                File rootFolder = new File(usrFolder);
+                genButtons(folderScan(rootFolder), rootFolder);
 
+            }
+        });
     }
 
     void debugButtons(){
@@ -135,6 +134,7 @@ public class HomeActivity extends AppCompatActivity
     void genButtons(int bookCount, File folder){
         RelativeLayout layout = findViewById(R.id.activity_home);
 
+
         for(int i=0; i< pastButtons;i++)
         {
             Button btn;
@@ -146,7 +146,7 @@ public class HomeActivity extends AppCompatActivity
         final File[] listOfFiles = folder.listFiles(fileFilter);
         int btnCount = 0;
         //int xIdent;
-        int yIdent = 900;
+        int yIdent = 800;
         int i;
         for (i = 0; i <bookCount; i++) {
             final String btnName;
@@ -192,16 +192,11 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-    public int pickFolder() {
-        int bookCount;
-
+    public void pickFolder() {
         Intent intent = new Intent(this, FolderPicker.class);
         startActivityForResult(intent, FOLDERPICKER_CODE);
         onActivityResult(FOLDERPICKER_CODE, RESULT_CODE, intent);
         Log.d("folderLocation", usrFolder);
-        File rootFolder = new File(usrFolder);
-        bookCount = folderScan(rootFolder);
-        return bookCount;
     }
 
 
@@ -230,9 +225,7 @@ public class HomeActivity extends AppCompatActivity
 
             String folderLocation = intent.getExtras().getString("data");
             Log.i( "folderLocation", folderLocation );
-            usrFolder = folderLocation;
-            Toast.makeText(getApplicationContext(),usrFolder,Toast.LENGTH_SHORT).show();
-            fileButton.setText(usrFolder);
+            fileLoc.setText(folderLocation);
 
 
         }
