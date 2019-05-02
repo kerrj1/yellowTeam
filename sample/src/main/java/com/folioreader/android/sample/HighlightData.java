@@ -11,7 +11,7 @@ import java.util.Date;
  * <p>
  * Created by gautam chibde on 12/10/17.
  */
-
+// Bookmark/Highlight: Saves exerts of user-selected text
 public class HighlightData implements HighLight {
 
     private String bookId;
