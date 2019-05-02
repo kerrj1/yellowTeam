@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 public class FolioReader {
 
     @SuppressLint("StaticFieldLeak")
+    // Design Pattern Implementation: Singleton call
     private static FolioReader singleton = null;
 
     public static final String EXTRA_BOOK_ID = "com.folioreader.extra.BOOK_ID";
@@ -100,6 +101,7 @@ public class FolioReader {
 
     public static FolioReader get() {
 
+        // Singleton implementation, creating backbone for FolioReader
         if (singleton == null) {
             synchronized (FolioReader.class) {
                 if (singleton == null) {
@@ -197,11 +199,13 @@ public class FolioReader {
 
     public FolioReader setPortNumber(int portNumber) {
         this.portNumber = portNumber;
+        // Singleton call
         return singleton;
     }
 
     public static void initRetrofit(String streamerUrl) {
 
+        // Singleton call
         if (singleton == null || singleton.retrofit != null)
             return;
 

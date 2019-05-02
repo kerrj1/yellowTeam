@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Created by Hrishikesh Kadam on 21/04/2018.
  */
+// Singleton Class: Serves to establish object paths needed
 public class ObjectMapperSingleton {
 
     private static volatile ObjectMapper objectMapper;

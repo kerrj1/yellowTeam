@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+// Splash Screen: generates more appealing user interface
 public class SplashScreen extends Activity {
 
     @Override

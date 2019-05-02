@@ -81,6 +81,7 @@ public class HomeActivity extends AppCompatActivity
         fileLoc = findViewById(R.id.file_location);
         fileLoc.setText(usrFolder);
 
+        // File Explorer: implemented to explore internal device storage and access ePub files
         findViewById(R.id.file_explorer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,6 +126,7 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    // Buttons: added to link ePub file location to buttons for easy access
     void genButtons(int bookCount, File folder){
         RelativeLayout layout = findViewById(R.id.activity_home);
 
@@ -184,6 +186,7 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    // Select folder: stores folder location
     public void pickFolder() {
         Intent intent = new Intent(this, FolderPicker.class);
         startActivityForResult(intent, FOLDERPICKER_CODE);
@@ -192,7 +195,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-
+    // Scans folder contents: stores file in an array of files
     public int folderScan(File folder) {
 
         FileFilter fileFilter = new WildcardFileFilter("*.epub");
@@ -238,6 +241,7 @@ public class HomeActivity extends AppCompatActivity
      * For testing purpose, we are getting dummy highlights from asset. But you can get highlights from your server
      * On success, you can save highlights to FolioReader DB.
      */
+    // Highlight: Used to select and save user-specified exerts of text
     private void getHighlightsAndSave() {
         new Thread(new Runnable() {
             @Override
