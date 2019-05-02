@@ -43,6 +43,7 @@ import com.folioreader.util.OnHighlightListener;
 import com.folioreader.util.ReadLocatorListener;
 import lib.folderpicker.FolderPicker;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import android.util.DisplayMetrics; // Needed for aspect ratio and res support fix
 
 import java.io.*;
 import java.util.ArrayList;
@@ -138,7 +139,14 @@ public class HomeActivity extends AppCompatActivity
         FileFilter fileFilter = new WildcardFileFilter("*.epub");
         final File[] listOfFiles = folder.listFiles(fileFilter);
         int btnCount = 0;
-        int yIdent = 800;
+
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();  // adds support for alternative aspect ratios eg 18.5:9
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        //int width = displayMetrics.widthPixels;
+        int yIdent = (int) (height / 3.55) ; //tested values 2 - 4 ; // Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2  ;  // 800 for 16:9 TM... adds support for alternative aspect ratios eg 18.5:9
+        //int yIdent = 800;
         int i;
         for (i = 0; i <bookCount; i++) {
             final String btnName;
@@ -166,8 +174,12 @@ public class HomeActivity extends AppCompatActivity
 
             layout.addView(btnTag);
             btnCount++;
-                yIdent += 150;
+                //yIdent += 150;
+
+                yIdent += 150 * height / 1920; // gap between epub buttons ... makes gaps more consistent across alternate resolutions and aspect ratios etc
+
         }
+
         pastButtons = btnCount;
 
     }
