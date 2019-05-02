@@ -70,7 +70,6 @@ public class HomeActivity extends AppCompatActivity
 
         getHighlightsAndSave();
 
-        debugButtons();
 
         fileLoc = findViewById(R.id.file_location);
         fileLoc.setText(usrFolder);
@@ -96,43 +95,7 @@ public class HomeActivity extends AppCompatActivity
         });
     }
 
-    void debugButtons(){
 
-        findViewById(R.id.btn_raw).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Config config = AppUtil.getSavedConfig(getApplicationContext());
-                if (config == null)
-                    config = new Config();
-                config.setAllowedDirection(Config.AllowedDirection.VERTICAL_AND_HORIZONTAL);
-
-                folioReader.setConfig(config, true)
-                        .openBook(R.raw.accessible_epub_3);
-            }
-        });
-
-        findViewById(R.id.btn_assest).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                ReadLocator readLocator = getLastReadLocator();
-
-                Config config = AppUtil.getSavedConfig(getApplicationContext());
-                if (config == null)
-                    config = new Config();
-                config.setAllowedDirection(Config.AllowedDirection.VERTICAL_AND_HORIZONTAL);
-
-                folioReader.setReadLocator(readLocator);
-                folioReader.setConfig(config, true)
-                        .openBook("file:///android_asset/TheSilverChair.epub\"");
-                //file:/storage/emulated/0/Download/TheSilverChair.epub
-                //"file:///android_asset/TheSilverChair.epub"
-                //adventures.epub
-            }
-        });
-
-    }
 
     void genButtons(int bookCount, File folder){
         RelativeLayout layout = findViewById(R.id.activity_home);
@@ -148,8 +111,7 @@ public class HomeActivity extends AppCompatActivity
         FileFilter fileFilter = new WildcardFileFilter("*.epub");
         final File[] listOfFiles = folder.listFiles(fileFilter);
         int btnCount = 0;
-        //int xIdent;
-        int yIdent = 800;
+        int yIdent = 650;
         int i;
         for (i = 0; i <bookCount; i++) {
             final String btnName;
@@ -157,21 +119,10 @@ public class HomeActivity extends AppCompatActivity
             bookName = bookName.replaceAll(".epub","");
             final String bookPath = ""+listOfFiles[i];
             btnName = bookName;
-            //xIdent = btnCount % 3;
             Button btnTag = new Button(this);
             btnTag.setText(btnName);
             btnTag.setId(btnCount);
             btnTag.setTag(btnName);
-//            switch(xIdent){
-//                case 0:
-//                    btnTag.setX(0);
-//                    break;
-//                case 1:
-//                    btnTag.setX(325);
-//                    break;
-//                case 2:
-//                    btnTag.setX(670);
-//            }
             btnTag.setY(yIdent);
             btnTag.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -188,7 +139,6 @@ public class HomeActivity extends AppCompatActivity
 
             layout.addView(btnTag);
             btnCount++;
-            //if(xIdent == 2)
                 yIdent += 150;
         }
         pastButtons = btnCount;
@@ -233,29 +183,6 @@ public class HomeActivity extends AppCompatActivity
 
         }
     }
-
-
-
-    /*
-    void checkStoragePermission() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            //Write permission is required so that folder picker can create new folder.
-            //If you just want to pick files, Read permission is enough.
-
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        SDCARD_PERMISSION);
-            }
-        }
-
-    }
-    */
 
     private ReadLocator getLastReadLocator() {
 
