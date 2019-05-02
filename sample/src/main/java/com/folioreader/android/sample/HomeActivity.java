@@ -15,8 +15,11 @@
  */
 package com.folioreader.android.sample;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.folioreader.Config;
@@ -50,7 +55,7 @@ public class HomeActivity extends AppCompatActivity
     private FolioReader folioReader;
     public int pastButtons = 0;
     public static String usrFolder = "/storage/emulated/0/Download/";
-    private static final int SDCARD_PERMISSION = 1,
+    private static final int REQ_PERMISSION = 120,
             FOLDERPICKER_CODE = 2,
             RESULT_CODE = 1,
             FILE_PICKER_CODE = 3;
@@ -70,6 +75,7 @@ public class HomeActivity extends AppCompatActivity
 
         getHighlightsAndSave();
 
+        debugButtons();
 
         fileLoc = findViewById(R.id.file_location);
         fileLoc.setText(usrFolder);
@@ -95,7 +101,28 @@ public class HomeActivity extends AppCompatActivity
         });
     }
 
+    void debugButtons(){
 
+
+        findViewById(R.id.btn_assest).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ReadLocator readLocator = getLastReadLocator();
+
+                Config config = AppUtil.getSavedConfig(getApplicationContext());
+                if (config == null)
+                    config = new Config();
+                config.setAllowedDirection(Config.AllowedDirection.VERTICAL_AND_HORIZONTAL);
+
+                folioReader.setReadLocator(readLocator);
+                folioReader.setConfig(config, true)
+                        .openBook("file:///android_asset/TheSilverChair.epub\"");
+
+            }
+        });
+
+    }
 
     void genButtons(int bookCount, File folder){
         RelativeLayout layout = findViewById(R.id.activity_home);
@@ -111,7 +138,7 @@ public class HomeActivity extends AppCompatActivity
         FileFilter fileFilter = new WildcardFileFilter("*.epub");
         final File[] listOfFiles = folder.listFiles(fileFilter);
         int btnCount = 0;
-        int yIdent = 650;
+        int yIdent = 800;
         int i;
         for (i = 0; i <bookCount; i++) {
             final String btnName;
