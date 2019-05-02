@@ -42,8 +42,8 @@ import com.folioreader.util.AppUtil;
 import com.folioreader.util.OnHighlightListener;
 import com.folioreader.util.ReadLocatorListener;
 import lib.folderpicker.FolderPicker;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-import android.util.DisplayMetrics; // Needed for aspect ratio and res support fix           
+import org.apache.commons.io.filefilter.WildcardFileFilter;      
+import android.util.DisplayMetrics; // Needed for aspect ratio and res support fix
 
 import java.io.*;
 import java.util.ArrayList;
